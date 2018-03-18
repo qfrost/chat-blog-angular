@@ -1,0 +1,66 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+          <label for="filter">Filter by post:</label>
+          <input type="text" class="form-control" name="filter" [(ngModel)]="filter" (keyup)="filterPost(filter)" />
+      </div>
+    </div>
+    <div class="col-md-9" *ngFor="let post of posts">
+      <div class="dashboard-info">
+          <h2 class="dashboard-title">
+            {{ post.name }}
+          </h2>
+          <div class="dashboard-date">
+            {{ post.date }}
+          </div>
+      </div>
+      <div class="dashboard-content">
+        {{ post.content }}
+      </div>
+      <div class="dashboard-author">
+        {{ post.author }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<button type="button" class="btn btn-primary dashboard-btn" (click)="openModal(template)">Add post</button>
+ 
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">New Post</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <form name="form" (ngSubmit)="p.form.valid && newPost()" #p="ngForm" novalidate>
+          <div class="form-group" [ngClass]="{ 'has-error': p.submitted && !name.valid }">
+              <label for="name">Title Post</label>
+              <input type="text" class="form-control" name="name" [(ngModel)]="post_model.name" #name="ngModel" required />
+              <div *ngIf="p.submitted && !name.valid" class="help-block">Tilte of post is required</div>
+          </div>
+          <div class="form-group" [ngClass]="{ 'has-error': p.submitted && !name.valid }">
+              <label for="content">Text</label>
+              <input type="text" class="form-control" name="content" [(ngModel)]="post_model.content" #content="ngModel" required />
+              <div *ngIf="p.submitted && !content.valid" class="help-block">Last Name is required</div>
+          </div>
+          <div class="form-group" [ngClass]="{ 'has-error': p.submitted && !name.valid }">
+              <label for="author">Author</label>
+              <input type="text" class="form-control" name="author" [(ngModel)]="post_model.author" #author="ngModel" required />
+              <div *ngIf="p.submitted && !author.valid" class="help-block">Username is required</div>
+          </div>
+          <div class="form-group" [ngClass]="{ 'has-error': p.submitted && !name.valid }">
+              <label for="date">Date</label>
+              <input type="date" class="form-control" name="date" [(ngModel)]="post_model.date" #date="ngModel" required />
+              <div *ngIf="p.submitted && !date.valid" class="help-block">Date is required</div>
+          </div>
+          <div class="form-group">
+              <button class="btn btn-primary">New Post</button>
+              <!-- <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /> -->
+              <a (click)="modalRef.hide()" class="btn btn-link">Cancel</a>
+          </div>
+      </form>  
+  </div>
+</ng-template>

@@ -1,0 +1,20 @@
+/* You can add global styles to this file, and also import other style files */
+
+body {
+    background: #eee;
+}
+
+.navbar {
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
+.dashboard {
+
+}
+
+.dashboard-btn {
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+}
