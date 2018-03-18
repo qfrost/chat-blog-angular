@@ -14,9 +14,10 @@ import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 export class DashboardComponent implements OnInit {
     currentUser: User;
     users: User[] = [];
-    post_model: any = {};
+    post_model: any = {
+      date: new Date().toISOString().substr(0, 16).replace('T', ', ')
+    };
     posts;
-    old_posts;
     modalRef: BsModalRef;
     filter: string = '';
     constructor(private userService: UserService,
@@ -34,13 +35,31 @@ export class DashboardComponent implements OnInit {
           if (filter.length > 0) {
             this.posts = data;
           } else {
-            this.posts = this.old_posts;
+            this.userService.getPost().subscribe(
+              data => {
+                  this.posts = data;
+              }
+            )
           }
         },
         err => {
-          this.posts = this.old_posts;
+          this.userService.getPost().subscribe(
+            data => {
+                this.posts = data;
+            }
+          )
         }
       );
+    }
+
+    lengthText(content: string) {
+      console.log(content);
+      if (content.length <= 250) {
+        return ''
+      } else {
+        console.log('content');
+        this.post_model.content.substr(0, 250);
+      }
     }
 
     newPost() {
@@ -61,7 +80,6 @@ export class DashboardComponent implements OnInit {
         this.userService.getPost().subscribe(
           data => {
             this.posts = data;
-            this.old_posts = data;
           }
         );
     }

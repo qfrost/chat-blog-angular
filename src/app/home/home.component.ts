@@ -13,6 +13,7 @@ export class HomeComponent implements OnInit {
     users: User[] = [];
     post_model: any = {};
     posts: any = [];
+    loading = false;
 
     constructor(private userService: UserService) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -21,22 +22,32 @@ export class HomeComponent implements OnInit {
     ngOnInit() {
         this.loadAllUsers();
 
+        this.loadPosts();
+    }
+
+    deletePost(id: number) {
+        this.loading = true;
+        this.posts = [];
+        this.userService.deletePost(id).subscribe(() => { this.loadPosts(); this.loading = false });
+    }
+
+    deleteUser(id: number) {
+        this.userService.deleteUser(id).subscribe(() => { this.loadAllUsers() });
+    }
+
+    private loadAllUsers() {
+        this.userService.getAll().subscribe(users => { this.users = users; });
+    }
+
+    private loadPosts() {
         this.userService.getPost().subscribe(
             data => {
                 for (const post in data) {
                     if (data[post].author == this.currentUser.firstName) {
                         this.posts.push(data[post]);
-                    }   
+                    }
                 }
             }
         );
-    }
-
-    deleteUser(id: number) {
-        this.userService.delete(id).subscribe(() => { this.loadAllUsers() });
-    }
-
-    private loadAllUsers() {
-        this.userService.getAll().subscribe(users => { this.users = users; });
     }
 }

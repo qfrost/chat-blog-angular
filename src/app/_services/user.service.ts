@@ -23,7 +23,7 @@ export class UserService {
         return this.http.put('/api/users/' + user.id, user);
     }
 
-    delete(id: number) {
+    deleteUser(id: number) {
         return this.http.delete('/api/users/' + id);
     }
     
@@ -37,5 +37,9 @@ export class UserService {
 
     filterPost(filter: string) {
         return this.http.get('/api/post/' + filter);
+    }
+
+    deletePost(id: number) {
+        return this.http.delete('/api/post/' + id);
     }
 }

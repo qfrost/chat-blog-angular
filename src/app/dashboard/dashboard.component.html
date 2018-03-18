@@ -43,22 +43,17 @@
           </div>
           <div class="form-group" [ngClass]="{ 'has-error': p.submitted && !name.valid }">
               <label for="content">Text</label>
-              <input type="text" class="form-control" name="content" [(ngModel)]="post_model.content" #content="ngModel" required />
-              <div *ngIf="p.submitted && !content.valid" class="help-block">Last Name is required</div>
+              <textarea type="text" class="form-control" name="content" maxlength="250" [(ngModel)]="post_model.content" #content="ngModel" required></textarea>
+              <p class="text-right">{{ (post_model.content === undefined) ? '0 / 250' : post_model.content.length + ' / 250' }}</p>
+              <div *ngIf="p.submitted && !content.valid" class="help-block">Is required</div>
           </div>
           <div class="form-group" [ngClass]="{ 'has-error': p.submitted && !name.valid }">
               <label for="author">Author</label>
               <input type="text" class="form-control" name="author" [(ngModel)]="post_model.author" #author="ngModel" required />
-              <div *ngIf="p.submitted && !author.valid" class="help-block">Username is required</div>
-          </div>
-          <div class="form-group" [ngClass]="{ 'has-error': p.submitted && !name.valid }">
-              <label for="date">Date</label>
-              <input type="date" class="form-control" name="date" [(ngModel)]="post_model.date" #date="ngModel" required />
-              <div *ngIf="p.submitted && !date.valid" class="help-block">Date is required</div>
+              <div *ngIf="p.submitted && !author.valid" class="help-block">Author is required</div>
           </div>
           <div class="form-group">
               <button class="btn btn-primary">New Post</button>
-              <!-- <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /> -->
               <a (click)="modalRef.hide()" class="btn btn-link">Cancel</a>
           </div>
       </form>  

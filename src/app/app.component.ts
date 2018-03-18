@@ -20,18 +20,5 @@ export class AppComponent {
 
     ngOnInit() {
         this.authenticationService.logout();
-
-        // this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin';
     }
-
-    // login() {
-    //     this.authenticationService.login(this.model.username, this.model.password)
-    //         .subscribe(
-    //             data => {
-    //                 this.router.navigate([this.returnUrl]);
-    //             },
-    //             error => {
-    //                 this.alertService.error(error);
-    //         });
-    // }
 }

@@ -17,10 +17,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         let users: any[] = JSON.parse(localStorage.getItem('users')) || [];
 
         let post: any[] = JSON.parse(localStorage.getItem('post')) || [
-            {name: "Best developer", content: "Best developer is Andrew Stepaniuk :)", author: "Andrew", date: "2018-03-24", id: 1},
-            {name: "True story", content: "True story", author: "Arthur", date: "2018-03-25", id: 2},
-            {name: "Column", content: "Text text lorum", author: "Inna", date: "2018-03-26", id: 3},
-            {name: "Money", content: "Money today is important", author: "Sofia", date: "2018-03-27", id: 4},
+            {name: "Best developer", content: "Best developer is Andrew Stepaniuk :)", author: "Andrew", date: "2018-03-18, 20:58", id: 1},
+            {name: "True story", content: "True story", author: "Arthur", date: "2018-03-18, 21:58", id: 2},
+            {name: "Column", content: "Text text lorum", author: "Inna", date: "2018-03-18, 22:01", id: 3},
+            {name: "Money", content: "Money today is important", author: "Sofia", date: "2018-03-18, 22:54", id: 4},
         ];
 
         return Observable.of(null).mergeMap(() => {
@@ -44,7 +44,6 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
                     return Observable.of(new HttpResponse({ status: 200, body: body }));
                 } else {
-                    // else return 400 bad request
                     return Observable.throw('Username or password is incorrect');
                 }
             }
@@ -67,7 +66,20 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             if (request.url.match(/\/api\/post\/[\wа-я0-1]+$/) && request.method === 'GET') {
                 let urlParts = request.url.split('/');
                 let filter = urlParts[urlParts.length - 1];
-                let matchedPost = post.filter(post => { return post.name === filter; });
+                let matchedPost = [];
+                let filterLength = filter.split(' ');
+                if (filterLength.length < 2) {
+                    for (const key in post) {
+                        let matchWord = post[key].name.split(' ');
+                        for (const word in matchWord) {
+                            if (matchWord[word] == filter) {
+                                matchedPost.push(post[key]);
+                            }
+                        }
+                    }
+                } else {
+                    matchedPost.push(post.filter(post => { return post.name === filter; }));
+                }
                 let posts = (matchedPost.length > 0) ? matchedPost : null;
 
                 return Observable.of(new HttpResponse({ status: 200, body: posts }));
@@ -77,12 +89,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             if (request.url.match('/api/post') && request.method === 'POST') {
                 let newPost = request.body;
 
-                // save new post
                 newPost.id = post.length + 1;
                 post.push(newPost);
                 localStorage.setItem('post', JSON.stringify(post));
 
-                // respond 200 OK
                 return Observable.of(new HttpResponse({ status: 200 }));
             }
 
@@ -105,18 +115,15 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             if (request.url.endsWith('/api/users') && request.method === 'POST') {
                 let newUser = request.body;
 
-                // validation
                 let duplicateUser = users.filter(user => { return user.username === newUser.username; }).length;
                 if (duplicateUser) {
                     return Observable.throw('Username "' + newUser.username + '" is already taken');
                 }
 
-                // save new user
                 newUser.id = users.length + 1;
                 users.push(newUser);
                 localStorage.setItem('users', JSON.stringify(users));
 
-                // respond 200 OK
                 return Observable.of(new HttpResponse({ status: 200 }));
             }
 
@@ -128,22 +135,35 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                     for (let i = 0; i < users.length; i++) {
                         let user = users[i];
                         if (user.id === id) {
-                            // delete user
                             users.splice(i, 1);
                             localStorage.setItem('users', JSON.stringify(users));
                             break;
                         }
                     }
-
-                    // respond 200 OK
                     return Observable.of(new HttpResponse({ status: 200 }));
                 } else {
-                    // return 401 not authorised if token is null or invalid
                     return Observable.throw('Unauthorised');
                 }
             }
 
-            // pass through any requests not handled above
+            // delete post
+            if (request.url.match(/\/api\/post\/\d+$/) && request.method === 'DELETE') {
+                if (request.headers.get('Authorization') === 'Bearer 2|100344ce|bb11b4d06798d856358b9c1e9413bd4c|1521188889') {
+                    let urlParts = request.url.split('/');
+                    let id = parseInt(urlParts[urlParts.length - 1]);
+                    for (let i = 0; i < post.length; i++) {
+                        let postId = post[i];
+                        if (postId.id === id) {
+                            post.splice(i, 1);
+                            localStorage.setItem('post', JSON.stringify(post));
+                            break;
+                        }
+                    }
+                    return Observable.of(new HttpResponse({ status: 200, body: post }));
+                } else {
+                    return Observable.throw('Unauthorised');
+                }
+            }
             return next.handle(request);
             
         })
@@ -154,7 +174,6 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 }
 
 export let fakeBackendProvider = {
-    // use fake backend in place of Http service for backend-less development
     provide: HTTP_INTERCEPTORS,
     useClass: FakeBackendInterceptor,
     multi: true
